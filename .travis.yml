@@ -1,4 +1,10 @@
 language: julia
+
+if: branch=master
+
+notifications:
+  email: false
+
 os:
   - linux
   - osx
@@ -6,15 +12,25 @@ julia:
   - 0.7
   - 1.0
   - nightly
-matrix:
-  allow_failures:
-    julia: nightly
-notifications:
-  email: false
+stages:
+  - build
+  - coverage
+  - documentation
 
 jobs:
+  allow_failures:
+    julia: nightly
   include:
-    - stage: "Documentation"
+    - stage: build
+      julia: 1.0
+      os: linux
+    - stage: coverage
+      julia: 1.0
+      os: linux
+      script:
+        - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
+      after_success: skip
+    - stage: documentation
       julia: 1.0
       os: linux
       script:
