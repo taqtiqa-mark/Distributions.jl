@@ -1,4 +1,10 @@
 language: julia
+
+if: branch=master
+
+notifications:
+  email: false
+
 os:
   - linux
   - osx
@@ -6,15 +12,34 @@ julia:
   - 0.7
   - 1.0
   - nightly
-matrix:
+stages:
+  - build
+  - coverage
+  - documentation
+
+jobs:
   allow_failures:
     julia: nightly
+<<<<<<< HEAD
 notifications:
   email: false
 
 jobs:
   include:
     - stage: "Documentation"
+=======
+  include:
+    - stage: build
+      julia: 1.0
+      os: linux
+    - stage: coverage
+      julia: 1.0
+      os: linux
+      script:
+        - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
+      after_success: skip
+    - stage: documentation
+>>>>>>> 15ea786... Update to Travis staged build.
       julia: 1.0
       os: linux
       script:
